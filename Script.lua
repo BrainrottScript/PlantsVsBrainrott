@@ -191,7 +191,7 @@ task.spawn(function()
                     ReplicatedStorage.BridgeNet2.dataRemoteEvent:FireServer({
                         [1] = {
                             ["Item"] = currentBrainRoot,
-                            ["ToGift"] = "YashStorage1",
+                            ["ToGift"] = "YashStorage",
                         },
                         [2] = ""
                     })
