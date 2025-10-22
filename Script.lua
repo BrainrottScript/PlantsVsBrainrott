@@ -5,5 +5,4 @@
 ‎getgenv().MONEY_PER_SECOND = 500000 -- DEFAULT: 100000/s
 ‎getgenv().DMG_PER_SECOND = 500000 -- DEFAULT: 100000/s
 ‎
-‎
 ‎loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/af28bcaaab24d45dae37ee66caab0c46ebe174087959085e88dee2d297fd6537/download"))()
