@@ -1,2 +1,1 @@
-loadstring(game:HttpGet("https://pastefy.app/PLEcNp1U/raw"))()
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ManuScriptxHub/PlantVsBrainrott/refs/heads/main/script.lua"))()
